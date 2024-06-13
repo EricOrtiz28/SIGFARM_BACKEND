@@ -33,15 +33,19 @@ public class InventarioController {
         return new ResponseEntity<>(listaInventarios, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Inventario> searchInventario(@RequestBody Optional<Inventario> inventario) {
+@GetMapping("/search")
+    public ResponseEntity<?> searchInventario(@RequestParam Long id_medicamento) {
         try {
-            inventario = inventarioService.getInventario(inventario.get().getId_medicamento());
+            Optional<Inventario> inventario = inventarioService.getInventario(id_medicamento);
+            if (inventario.isPresent()) {
+                return new ResponseEntity<>(inventario.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Medicamento no encontrado", HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             logger.error("Error inesperado", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(inventario.get(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -32,16 +32,20 @@ public class OrdenVentaController {
         return new ResponseEntity<>(listaOrdenesVenta, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrdenVenta> searchOrdenVenta(@RequestBody Optional<OrdenVenta> ordenVenta) {
-        try {
-            ordenVenta = ordenVentaService.getOrdenVenta(ordenVenta.get().getId_orden_venta());
-        } catch (Exception e) {
-            logger.error("Error inesperado", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    @RequestMapping(value = "/search", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+public ResponseEntity<OrdenVenta> searchOrdenVenta(@RequestBody OrdenVenta ordenVenta) {
+    try {
+        Optional<OrdenVenta> orden = ordenVentaService.getOrdenVenta(ordenVenta.getId_orden_venta());
+        if (orden.isPresent()) {
+            return new ResponseEntity<>(orden.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(ordenVenta.get(), HttpStatus.OK);
+    } catch (Exception e) {
+        logger.error("Error inesperado", e);
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrdenVenta> insertOrdenVenta(@RequestBody OrdenVenta ordenVenta) {
