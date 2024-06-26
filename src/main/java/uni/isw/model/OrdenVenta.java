@@ -7,10 +7,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Entity
+@Builder
 @Table(name = "orden_venta")
 public class OrdenVenta {
 
@@ -24,5 +26,15 @@ public class OrdenVenta {
     @ManyToOne
     @JoinColumn(name = "dni", referencedColumnName = "dni", insertable = false, updatable = false)
     private Cliente cliente;
+    
+        public OrdenVenta() {
+    }
+
+    public OrdenVenta(Long id_orden_venta, Integer dni, Boolean estado, Cliente cliente) {
+        this.id_orden_venta = id_orden_venta;
+        this.dni = dni;
+        this.estado = estado;
+        this.cliente = cliente;
+    }
 }
 
